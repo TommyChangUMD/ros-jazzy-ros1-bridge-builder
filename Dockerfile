@@ -38,24 +38,27 @@ FROM ros:jazzy-ros-base-noble
 # Make sure bash catches errors (no need to chain commands with &&, use ; instead)
 SHELL ["/bin/bash", "-o", "pipefail", "-o", "errexit", "-c"]
 
+ARG DEBIAN_FRONTEND=noninteractive
 
 ###########################
 # 1.) Bring system up to the latest ROS desktop configuration
 ###########################
-RUN apt-get -y update
-RUN apt-get -y upgrade
-RUN apt-get -y install ros-jazzy-desktop
+RUN apt update; \
+    apt -y install ros-jazzy-desktop; \
+    rm -rf /var/lib/apt/lists/*
 
 
 ###########################
 # 5.) Install ROS1 Noetic desktop
 # (Currently, ppa contains AMD64 builds only)
 ###########################
-RUN apt-get -y install software-properties-common
+RUN apt update; \
+    apt -y install software-properties-common; \
+    rm -rf /var/lib/apt/lists/*
 RUN add-apt-repository ppa:ros-for-jammy/noble
-RUN apt-get -y update
-RUN apt-get -y upgrade
-RUN apt-get -y install ros-noetic-desktop
+RUN apt update; \
+    apt -y install ros-noetic-desktop; \
+    rm -rf /var/lib/apt/lists/*
 
 # fix ARM64 pkgconfig path issue -- Fix provided by ambrosekwok 
 RUN if [[ $(uname -m) = "arm64" || $(uname -m) = "aarch64" ]]; then                     \
@@ -68,9 +71,11 @@ RUN if [[ $(uname -m) = "arm64" || $(uname -m) = "aarch64" ]]; then             
 ###########################
 
 # g++-11 and needed
-RUN apt -y install g++-11 gcc-11
-RUN update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 11
-RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 11
+RUN apt update; \
+    apt -y install g++-11 gcc-11; \
+    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 11; \
+    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 11; \
+    rm -rf /var/lib/apt/lists/*
 
 RUN                                                                                     \
      #-------------------------------------                                             \
@@ -97,11 +102,6 @@ RUN                                                                             
      time ROS_DISTRO=humble MAKEFLAGS="-j $MIN" colcon build                            \
        --event-handlers console_direct+                                                 \
        --cmake-args -DCMAKE_BUILD_TYPE=Release
-
-###########################
-# 8.) Clean up
-###########################
-RUN apt-get -y clean all; apt-get -y update
 
 ###########################
 # 9.) Pack all ROS1 dependent libraries
