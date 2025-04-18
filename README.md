@@ -7,6 +7,9 @@ Create a "*ros-jazzy-ros1-bridge*" package that can be used directly within Ubun
 
 - Note3: To add support for other topics, see also https://github.com/TommyChangUMD/ros-humble-ros1-bridge-builder
 
+## How to create ros-jazzy-ros1-bridge package:
+
+See [ROS 2 Jazzy to ROS 1 Noetic bag converter](BagConversion.md).
 
 ## How to create this builder docker images:
 
