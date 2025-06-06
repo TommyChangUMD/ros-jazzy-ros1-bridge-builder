@@ -44,12 +44,6 @@ ARG DEBIAN_FRONTEND=noninteractive
 # 1.) Bring system up to the latest ROS desktop configuration
 ###########################
 
-# Fix apt update with ros old GPG keys
-RUN rm -f /etc/apt/sources.list.d/ros*.list && \
-    apt-get update && apt-get install -y curl && \
-    curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | gpg --dearmor | tee /usr/share/keyrings/ros-archive-keyring.gpg > /dev/null && \
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/ros2-latest.list > /dev/null
-
 RUN apt-get update; \
     apt-get -y install ros-jazzy-desktop; \
     rm -rf /var/lib/apt/lists/*
@@ -77,12 +71,15 @@ RUN if [[ $(uname -m) = "arm64" || $(uname -m) = "aarch64" ]]; then             
 # 6.) Compile custom msgs
 ###########################
 
-RUN git clone https://github.com/Mohamed-Ahmed-Taha/custom-ros-bridge-messages && \
-    cd /custom-ros-bridge-messages/ros1_ws && \
+COPY custom_msgs /custom_msgs
+RUN \
+    # Build the ros1 workspace
+    cd /custom_msgs/custom_msgs_ros1_ws && \
     unset ROS_DISTRO && \
     source /opt/ros/noetic/setup.bash && \
     time colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release && \
-    cd /custom-ros-bridge-messages/ros2_ws && \
+    # Build the ros2 workspace
+    cd /custom_msgs/custom_msgs_ros2_ws && \
     unset ROS_DISTRO && \
     source /opt/ros/jazzy/setup.bash && \
     time colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
@@ -116,8 +113,8 @@ RUN                                                                             
     #-------------------------------------                                             \
     # Apply the ROS1 and ROS2 overlays                                                 \
     #-------------------------------------                                             \
-    source /custom-ros-bridge-messages/ros1_ws/install/local_setup.bash;               \
-    source /custom-ros-bridge-messages/ros2_ws/install/local_setup.bash;               \
+    source /custom_msgs/custom_msgs_ros1_ws/install/local_setup.bash;                  \
+    source /custom_msgs/custom_msgs_ros2_ws/install/local_setup.bash;                  \
                                                                                        \
     #-------------------------------------                                             \
     # Finally, build the Bridge                                                        \
