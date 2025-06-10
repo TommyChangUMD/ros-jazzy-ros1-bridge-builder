@@ -5,8 +5,6 @@ Create a "*ros-jazzy-ros1-bridge*" package that can be used directly within Ubun
 
 - Note2: It takes about 1 GB of memory per logical CPU core to compile the ROS1 bridge. So, if your system has only 4 GB of memory but 100 logical CPU cores, it will still use only 4 logical cores for the compilation. Now, why does it take so much memory to compile?  Well, you can blame the overuse of C++ templates...
 
-- Note3: To add support for other topics, see also https://github.com/TommyChangUMD/ros-humble-ros1-bridge-builder
-
 ## How to create ros-jazzy-ros1-bridge package:
 
 See [ROS 2 Jazzy to ROS 1 Noetic bag converter](BagConversion.md).
@@ -14,9 +12,9 @@ See [ROS 2 Jazzy to ROS 1 Noetic bag converter](BagConversion.md).
 ## How to create this builder docker images:
 
 ``` bash
-  git clone https://github.com/TommyChangUMD/ros-jazzy-ros1-bridge-builder.git
+  git clone https://github.com/Mohamed-Ahmed-Taha/ros-jazzy-ros1-bridge-builder.git
   cd ros-jazzy-ros1-bridge-builder
-  docker build . -t ros-jazzy-ros1-bridge-builder
+  docker build . -t ros-jazzy-ros1-bridge-builder:latest
 ```
 
 - Note1: Since building a docker image just needs docker, you could do this step on any system that has docker installed -- it doesn't have to on a Ubuntu 24.04 (Noble) and it doesn't need ROS2 neither.
@@ -27,13 +25,13 @@ See [ROS 2 Jazzy to ROS 1 Noetic bag converter](BagConversion.md).
 ``` bash
     cd ~/
     apt update; apt upgrade
-    apt -y install ros-jazzy-desktop
-    docker run --rm ros-jazzy-ros1-bridge-builder | tar xvzf -
+    apt -y install ros-jazzy-desktop-full
+    docker run --rm ros-jazzy-ros1-bridge-builder:latest | tar xvzf -
 ```
 
-- Note1: It's **important** that you have **`ros-jazzy-desktop`** installed on your ROS2 Jazzy system because we want to **match it with the builder image as closely as possible**.  So, if you haven't done so already, do:
+- Note1: It's **important** that you have **`ros-jazzy-desktop-full`** installed on your ROS2 Jazzy system because we want to **match it with the builder image as closely as possible**.  So, if you haven't done so already, do:
 ``` bash
-    apt -y install ros-jazzy-desktop
+    apt -y install ros-jazzy-desktop-full
 ```
 
 - Note1: There is no compilation at this point, the `docker run` command simply spits out a pre-compiled tarball for either amd64 or arm64 architecture, depending on the architecture of the machine you used to created the builder image.
@@ -43,27 +41,42 @@ See [ROS 2 Jazzy to ROS 1 Noetic bag converter](BagConversion.md).
 - Note3: We don't really need the builder image anymore, to delete it, do:
 
 ``` bash
-    docker rmi ros-jazzy-ros1-bridge-builder
+    docker rmi ros-jazzy-ros1-bridge-builder:latest
 ```
 
 ## How to use ros-jazzy-ros1-bridge:
 ###  1.) First start a ROS1 Noetic docker and bring up a GUI terminal, something like:
-
+#### Using rocker
 ``` bash
   rocker --x11 --user --privileged \
-         --volume /dev/shm /dev/shm --network=host -- ros:noetic-ros-base-focal \
-         'bash -c "sudo apt update; sudo apt install -y ros-noetic-rospy-tutorials tilix; tilix"'
+         --volume /dev/shm /dev/shm --network=host -- osrf/ros:noetic-desktop-full \
+         'bash -c "sudo apt update; sudo apt install -y tilix; tilix"'
 ```
-
-Tha docker image used above, `ros:noetic-ros-base-focal`, is multi-platform.  It runs on amd64 (eg., Intel and AMD CPUs) or arm64 architecture (eg., Raspberry PI 4B and Nvidia Jetson Orin).  Docker will automatically select the correct platform variant based on the host's architecture.
-
 You may need to install rocker first:
 ``` bash
   sudo apt install python3-rocker
 ```
+### Using normal GUI privliges
+Using this option, you will stay on the terminal
+``` bash
+  xhost +local:docker
+  docker run -it --privileged --net=host -v /tmp/.X11-unix/:/tmp/.X11-unix/:rw \
+  --env="DISPLAY" --name ros-neotic-container osrf/ros:noetic-desktop-full
+```
+If you exited your container, you can reopen it. To reopen container use
+``` bash
+  docker start -ai ros-noetic-container
+```
+To open another terminal use:
+``` bash
+docker exec -it ros-noetic-container bash
+
+Tha docker image used above, `osrf/ros:noetic-desktop-full`, is multi-platform.  It runs on amd64 (eg., Intel and AMD CPUs) or arm64 architecture (eg., Raspberry PI 4B and Nvidia Jetson Orin).  Docker will automatically select the correct platform variant based on the host's architecture.
+
+
 - Note1: It's important to share the host's network and the `/dev/shm/` directory with the container.
 - Note2: You can add the `--home` rocker option if you want your home directory to be shared with the docker container.  Be careful though, as the host's `~/.bashrc` will be executed inside the container.
-- Note3: You can also use **ROS1 Melodic**.  Just replace `ros:noetic-ros-base-focal` with `ros:melodic-ros-base-bionic` and also replace `ros-noetic-rospy-tutorials` with `ros-melodic-rospy-tutorials`.
+- Note3: You can also use **ROS1 Melodic**.  Just replace `osrf/ros:noetic-desktop-full` with `osrf/ros:melodic-desktop-full`.
 
 ###  2.) Then, start "roscore" inside the ROS1 Noetic docker container
 
