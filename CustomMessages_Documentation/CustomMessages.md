@@ -56,7 +56,7 @@ Remove all the dependencies that have to do with custom messages in the `CMakeLi
 
 ### Here is a working example of the above process of separating packages:
 
-[Separating Custom msgs in a standalone package](https://www.notion.so/Separating-Custom-msgs-in-a-standalone-package-20e896024ee580fab808c033b6ed8156?pvs=21) 
+[Separating Custom msgs in a standalone package](https://github.com/Mohamed-Ahmed-Taha/ros-jazzy-ros1-bridge-builder/blob/main/CustomMessages_Documentation/ROS1_PackageSeparation.md)
 
 ### Building the ROS1 workspace
 
