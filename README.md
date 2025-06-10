@@ -5,7 +5,7 @@ Create a "*ros-jazzy-ros1-bridge*" package that can be used directly within Ubun
 
 - Note2: It takes about 1 GB of memory per logical CPU core to compile the ROS1 bridge. So, if your system has only 4 GB of memory but 100 logical CPU cores, it will still use only 4 logical cores for the compilation. Now, why does it take so much memory to compile?  Well, you can blame the overuse of C++ templates...
 
-## How to create ros-jazzy-ros1-bridge package:
+## How to create ros-jazzy-ros1-bridge package bag:
 
 See [ROS 2 Jazzy to ROS 1 Noetic bag converter](BagConversion.md).
 
@@ -56,7 +56,7 @@ You may need to install rocker first:
 ``` bash
   sudo apt install python3-rocker
 ```
-### Using normal GUI privliges
+#### Using normal GUI privliges
 Using this option, you will stay on the terminal
 ``` bash
   xhost +local:docker
