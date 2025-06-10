@@ -9,6 +9,10 @@ Create a "*ros-jazzy-ros1-bridge*" package that can be used directly within Ubun
 
 See [ROS 2 Jazzy to ROS 1 Noetic bag converter](BagConversion.md).
 
+## How to add custom messages to the ros-jazzy-ros1-bridge:
+
+See [Custom Messages in ros-jazzy-ros1-bridge documentation](CustomMessages_Documentation/CustomMessages.md).
+
 ## How to create this builder docker images:
 
 ``` bash
