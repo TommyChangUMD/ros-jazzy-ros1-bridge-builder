@@ -116,7 +116,7 @@ If you have the two custom message packages of ros1 and ros2 ready with no error
 - Copy the ros1 custom messages packages into the `custom_msgs/ustom_msgs_ros1_ws/src` directory that was cloned, beside any other custom messages packages already there.
     
     > 👉 **Tip:** There is an example custom message package there called `pseudo_grid_map_msgs`. If you do not need this custom message you can either just delete this package, or add it to your custom messages packages present in the `custom_interfaces` directory of the ros2 workspace. \
-    > Note: Now there is a separate branch to get this package, add `--branch with-example` to the clone command to get this example    
+    > Note: Currently, to get this package, add --branch with-example to the clone command to get this example.    
     
 - Copy the ros2 custom messages packages into the `custom_msgs/ustom_msgs_ros2_ws/src` directory that was cloned, beside any other custom messages packages already there (also delete this package if you have deleted the one in the ros2 side).
 
