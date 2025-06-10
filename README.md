@@ -12,7 +12,7 @@ See [ROS 2 Jazzy to ROS 1 Noetic bag converter](BagConversion.md).
 ## How to create this builder docker images:
 
 ``` bash
-  git clone https://github.com/Mohamed-Ahmed-Taha/ros-jazzy-ros1-bridge-builder.git
+  git clone --recurse-submodules https://github.com/Mohamed-Ahmed-Taha/ros-jazzy-ros1-bridge-builder.git
   cd ros-jazzy-ros1-bridge-builder
   docker build . -t ros-jazzy-ros1-bridge-builder:latest
 ```
@@ -69,7 +69,8 @@ If you exited your container, you can reopen it. To reopen container use
 ```
 To open another terminal use:
 ``` bash
-docker exec -it ros-noetic-container bash
+  docker exec -it ros-noetic-container bash
+```
 
 Tha docker image used above, `osrf/ros:noetic-desktop-full`, is multi-platform.  It runs on amd64 (eg., Intel and AMD CPUs) or arm64 architecture (eg., Raspberry PI 4B and Nvidia Jetson Orin).  Docker will automatically select the correct platform variant based on the host's architecture.
 
