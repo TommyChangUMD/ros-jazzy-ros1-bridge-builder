@@ -16,7 +16,7 @@ See [Custom Messages in ros-jazzy-ros1-bridge documentation](CustomMessages_Docu
 ## How to create this builder docker images:
 
 ``` bash
-  git clone --recurse-submodules https://github.com/Mohamed-Ahmed-Taha/ros-jazzy-ros1-bridge-builder.git
+  git clone --recurse-submodules https://github.com/TommyChangUMD/ros-jazzy-ros1-bridge-builder.git
   cd ros-jazzy-ros1-bridge-builder
   docker build . -t ros-jazzy-ros1-bridge-builder:latest
 ```

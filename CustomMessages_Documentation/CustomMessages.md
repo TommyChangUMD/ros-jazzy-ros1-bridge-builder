@@ -56,7 +56,7 @@ Remove all the dependencies that have to do with custom messages in the `CMakeLi
 
 ### Here is a working example of the above process of separating packages:
 
-[Separating Custom msgs in a standalone package](https://github.com/Mohamed-Ahmed-Taha/ros-jazzy-ros1-bridge-builder/blob/main/CustomMessages_Documentation/ROS1_PackageSeparation.md)
+[Separating Custom msgs in a standalone package](https://github.com/TommyChangUMD/ros-jazzy-ros1-bridge-builder/blob/main/CustomMessages_Documentation/ROS1_PackageSeparation.md)
 
 ### Building the ROS1 workspace
 
@@ -102,11 +102,11 @@ colcon build
 
 ### Clone the ros-jazzy-ros1-bridge-builder (if not done already)
 
-You need to clone the bridge builder [repository from GitHub](https://github.com/Mohamed-Ahmed-Taha/ros-jazzy-ros1-bridge-builder) using.
+You need to clone the bridge builder [repository from GitHub](https://github.com/TommyChangUMD/ros-jazzy-ros1-bridge-builder) using.
 
 ```bash
 cd
-git clone --recurse-submodules https://github.com/Mohamed-Ahmed-Taha/ros-jazzy-ros1-bridge-builder
+git clone --recurse-submodules https://github.com/TommyChangUMD/ros-jazzy-ros1-bridge-builder
 ```
 
 ### Adding the packages to the bridge
