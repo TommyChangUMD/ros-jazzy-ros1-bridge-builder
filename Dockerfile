@@ -43,8 +43,9 @@ ARG DEBIAN_FRONTEND=noninteractive
 ###########################
 # 1.) Bring system up to the latest ROS desktop configuration
 ###########################
-RUN apt update; \
-    apt -y install ros-jazzy-desktop; \
+
+RUN apt-get update; \
+    apt-get -y install ros-jazzy-desktop; \
     rm -rf /var/lib/apt/lists/*
 
 
@@ -52,11 +53,12 @@ RUN apt update; \
 # 5.) Install ROS1 Noetic desktop
 # (Currently, ppa contains AMD64 builds only)
 ###########################
-RUN apt update; \
-    apt -y install software-properties-common; \
+
+RUN apt-get update; \
+    apt-get -y install software-properties-common; \
     rm -rf /var/lib/apt/lists/*
 RUN add-apt-repository ppa:ros-for-jammy/noble
-RUN apt update; \
+RUN apt-get update; \
     apt -y install ros-noetic-desktop; \
     rm -rf /var/lib/apt/lists/*
 
@@ -65,43 +67,65 @@ RUN if [[ $(uname -m) = "arm64" || $(uname -m) = "aarch64" ]]; then             
       cp /usr/lib/x86_64-linux-gnu/pkgconfig/* /usr/lib/aarch64-linux-gnu/pkgconfig/;   \
     fi
 
+###########################
+# 6.) Compile custom msgs
+###########################
+
+COPY custom_msgs /custom_msgs
+RUN \
+    # Build the ros1 workspace
+    cd /custom_msgs/custom_msgs_ros1_ws && \
+    unset ROS_DISTRO && \
+    source /opt/ros/noetic/setup.bash && \
+    time colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release && \
+    # Build the ros2 workspace
+    cd /custom_msgs/custom_msgs_ros2_ws && \
+    unset ROS_DISTRO && \
+    source /opt/ros/jazzy/setup.bash && \
+    time colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
 
 ###########################
 # 7.) Compile ros1_bridge
 ###########################
 
 # g++-11 and needed
-RUN apt update; \
-    apt -y install g++-11 gcc-11; \
+RUN apt-get update; \
+    apt-get -y install g++-11 gcc-11; \
     update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 11; \
     update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 11; \
     rm -rf /var/lib/apt/lists/*
 
-RUN                                                                                     \
-     #-------------------------------------                                             \
-     # Get the Bridge code                                                              \
-     #-------------------------------------                                             \
-     mkdir -p /ros-jazzy-ros1-bridge/src;                                               \
-     cd /ros-jazzy-ros1-bridge/src;                                                     \
-     git clone -b action_bridge_humble https://github.com/smith-doug/ros1_bridge.git;   \
-     cd ros1_bridge/;                                                                   \
-                                                                                        \
-     #-------------------------------------                                             \
-     # Apply the ROS1 and ROS2 underlays                                                \
-     #-------------------------------------                                             \
-     source /opt/ros/noetic/setup.bash;                                                 \
-     source /opt/ros/jazzy/setup.bash;                                                  \
-                                                                                        \
-     #-------------------------------------                                             \
-     # Finally, build the Bridge                                                        \
-     #-------------------------------------                                             \
-     MEMG=$(printf "%.0f" $(free -g | awk '/^Mem:/{print $2}'));                        \
-     NPROC=$(nproc);  MIN=$((MEMG<NPROC ? MEMG : NPROC));                               \
-     cd /ros-jazzy-ros1-bridge/;                                                        \
-     echo "Please wait...  running $MIN concurrent jobs to build ros1_bridge";          \
-     time ROS_DISTRO=humble MAKEFLAGS="-j $MIN" colcon build                            \
-       --event-handlers console_direct+                                                 \
-       --cmake-args -DCMAKE_BUILD_TYPE=Release
+RUN                                                                                    \
+    #-------------------------------------                                             \
+    # Get the Bridge code                                                              \
+    #-------------------------------------                                             \
+    mkdir -p /ros-jazzy-ros1-bridge/src;                                               \
+    cd /ros-jazzy-ros1-bridge/src;                                                     \
+    git clone -b action_bridge_humble https://github.com/smith-doug/ros1_bridge.git;   \
+    cd ros1_bridge/;                                                                   \
+                                                                                       \
+    #-------------------------------------                                             \
+    # Apply the ROS1 and ROS2 underlays                                                \
+    #-------------------------------------                                             \
+    source /opt/ros/noetic/setup.bash;                                                 \
+    source /opt/ros/jazzy/setup.bash;                                                  \
+                                                                                       \
+    #-------------------------------------                                             \
+    # Apply the ROS1 and ROS2 overlays                                                 \
+    #-------------------------------------                                             \
+    source /custom_msgs/custom_msgs_ros1_ws/install/local_setup.bash;                  \
+    source /custom_msgs/custom_msgs_ros2_ws/install/local_setup.bash;                  \
+                                                                                       \
+    #-------------------------------------                                             \
+    # Finally, build the Bridge                                                        \
+    #-------------------------------------                                             \
+    MEMG=$(printf "%.0f" $(free -g | awk '/^Mem:/{print $2}'));                        \
+    NPROC=$(nproc);  MIN=$((MEMG<NPROC ? MEMG : NPROC));                               \
+    cd /ros-jazzy-ros1-bridge/;                                                        \
+    echo "Please wait...  running $MIN concurrent jobs to build ros1_bridge";          \
+    time ROS_DISTRO=humble MAKEFLAGS="-j $MIN" colcon build                            \
+        --event-handlers console_direct+                                               \
+        --cmake-args -DCMAKE_BUILD_TYPE=Release
 
 ###########################
 # 9.) Pack all ROS1 dependent libraries
