@@ -56,7 +56,7 @@ Remove all the dependencies that have to do with custom messages in the `CMakeLi
 
 ### Here is a working example of the above process of separating packages:
 
-[Separating Custom msgs in a standalone package](https://github.com/Mohamed-Ahmed-Taha/ros-jazzy-ros1-bridge-builder/blob/main/CustomMessages_Documentation/ROS1_PackageSeparation.md)
+[Separating Custom msgs in a standalone package](https://github.com/TommyChangUMD/ros-jazzy-ros1-bridge-builder/blob/main/CustomMessages_Documentation/ROS1_PackageSeparation.md)
 
 ### Building the ROS1 workspace
 
@@ -102,11 +102,11 @@ colcon build
 
 ### Clone the ros-jazzy-ros1-bridge-builder (if not done already)
 
-You need to clone the bridge builder [repository from GitHub](https://github.com/Mohamed-Ahmed-Taha/ros-jazzy-ros1-bridge-builder) using.
+You need to clone the bridge builder [repository from GitHub](https://github.com/TommyChangUMD/ros-jazzy-ros1-bridge-builder) using.
 
 ```bash
 cd
-git clone --recurse-submodules https://github.com/Mohamed-Ahmed-Taha/ros-jazzy-ros1-bridge-builder
+git clone --recurse-submodules https://github.com/TommyChangUMD/ros-jazzy-ros1-bridge-builder
 ```
 
 ### Adding the packages to the bridge
@@ -114,9 +114,6 @@ git clone --recurse-submodules https://github.com/Mohamed-Ahmed-Taha/ros-jazzy-r
 If you have the two custom message packages of ros1 and ros2 ready with no errors (both have been built successfully). Then all you need to do is:
 
 - Copy the ros1 custom messages packages into the `custom_msgs/ustom_msgs_ros1_ws/src` directory that was cloned, beside any other custom messages packages already there.
-    
-    > 👉 **Tip:** There is an example custom message package there called `pseudo_grid_map_msgs`. If you do not need this custom message you can either just delete this package, or add it to your custom messages packages present in the `custom_interfaces` directory of the ros2 workspace. \
-    > Note: Currently, to get this package, add --branch with-example to the clone command to get this example.    
     
 - Copy the ros2 custom messages packages into the `custom_msgs/ustom_msgs_ros2_ws/src` directory that was cloned, beside any other custom messages packages already there (also delete this package if you have deleted the one in the ros2 side).
 
