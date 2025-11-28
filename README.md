@@ -65,7 +65,7 @@ Using this option, you will stay on the terminal
 ``` bash
   xhost +local:docker
   docker run -it --privileged --net=host -v /tmp/.X11-unix/:/tmp/.X11-unix/:rw \
-  --env="DISPLAY" --name ros-neotic-container osrf/ros:noetic-desktop-full
+  --env="DISPLAY" --name ros-noetic-container osrf/ros:noetic-desktop-full
 ```
 If you exited your container, you can reopen it. To reopen container use
 ``` bash
